@@ -10,7 +10,7 @@ mod db;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct ResourceUpdateRequest {
+pub struct ResourceUpdateRequest {
     name: String,
     status: Option<String>,
     description: Option<String>,
@@ -19,7 +19,7 @@ struct ResourceUpdateRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct Resource {
+pub struct Resource {
     name: String,
     status: String,
     description: String,

@@ -1,0 +1,74 @@
+{
+  "db": "PostgreSQL",
+  "38851821c8c8320139410efbddc75ca7221fa3aeb91752c5836c5f4306a7955c": {
+    "query": "\nINSERT INTO resources (name, status, description, other_fields)\nVALUES ($1,$2,$3,$4)\nRETURNING name\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "name",
+          "type_info": "Text"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Jsonb"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  },
+  "5123d1835cf7e6606b4bc810f066076f309522279af5fdc33c1c322d0d4dda9f": {
+    "query": "\nDELETE\nFROM resources\nWHERE name = ($1)\n        ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "53100322d58b19c223a10a91120bf3294222592d2edd39ee54cd704628d2698b": {
+    "query": "\nSELECT name, status, description, other_fields as \"other_fields: Json<OtherFields>\"\nFROM resources\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 1,
+          "name": "status",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "description",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "other_fields: Json<OtherFields>",
+          "type_info": "Jsonb"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  }
+}
