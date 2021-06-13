@@ -1,0 +1,13 @@
+version: "3"
+services:
+        db.local:
+                image: postgres
+                container_name: aggregator-postgres
+                environment:
+                        - POSTGRES_USER=default
+                        - POSTGRES_PASSWORD=default
+                        - POSTGRES_DB=default
+                ports:
+                        - "6000:5432"
+                volumes:
+                        - ./postgres-data:/var/lib/postgresql/data
