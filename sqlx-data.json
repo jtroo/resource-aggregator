@@ -70,5 +70,20 @@
         false
       ]
     }
+  },
+  "680f91681ebc014c52339161b94aa52ee13c6765ac1a4fe72e8182624c45cd77": {
+    "query": "\nINSERT INTO resources (name, status, description, other_fields)\nVALUES ($1,$2,$3,$4)\n        ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Jsonb"
+        ]
+      },
+      "nullable": []
+    }
   }
 }

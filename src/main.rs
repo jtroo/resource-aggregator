@@ -21,6 +21,15 @@ pub struct Resource {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
+pub struct ResourceCreateReq {
+    name: String,
+    status: String,
+    description: String,
+    other_fields: Option<HashMap<String, String>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
 pub struct ResourceUpdateReq {
     name: String,
     status: Option<String>,
@@ -37,6 +46,35 @@ pub struct ResourceDeleteReq {
 type ResourceList = Vec<Resource>;
 type Db = sqlx::PgPool;
 
+#[derive(Responder)]
+enum Response {
+    ResourceList(Json<ResourceList>),
+    #[response(status = 200)]
+    OK(()),
+    #[response(status = 400)]
+    BadRequest(String),
+    #[response(status = 500)]
+    ServerError(String),
+}
+
+#[post("/resource/new", format = "json", data = "<req>")]
+async fn create(req: Json<ResourceCreateReq>, db: &State<Db>) -> Response {
+    let new_resource = Resource {
+        name: req.name.clone(),
+        status: req.status.clone(),
+        description: req.description.clone(),
+        other_fields: req.other_fields.clone().unwrap_or_default(),
+    };
+    match db::create_resource(db, &new_resource).await {
+        Ok(Ok(())) => Response::OK(()),
+        Ok(Err(msg)) => Response::BadRequest(msg),
+        Err(e) => {
+            log::error!("{:?}", e);
+            Response::ServerError("Could not retrieve data".into())
+        }
+    }
+}
+
 #[post("/resource", format = "json", data = "<req>")]
 fn update(req: Json<ResourceUpdateReq>, db: &State<Db>) {
     println!("{:?}", req);
@@ -44,14 +82,25 @@ fn update(req: Json<ResourceUpdateReq>, db: &State<Db>) {
 }
 
 #[get("/resource", format = "json")]
-fn get(db: &State<Db>) -> Json<ResourceList> {
-    // TODO: implement me
-    Vec::<Resource>::new().into()
+async fn get(db: &State<Db>) -> Response {
+    match db::list_resources(db).await {
+        Ok(v) => Response::ResourceList(v.into()),
+        Err(e) => {
+            log::error!("{:?}", e);
+            Response::ServerError("Could not retrieve data".into())
+        }
+    }
 }
 
 #[delete("/resource", format = "json", data = "<req>")]
-fn delete(req: Json<ResourceDeleteReq>, db: &State<Db>) {
-    todo!("")
+async fn delete(req: Json<ResourceDeleteReq>, db: &State<Db>) -> Response {
+    match db::delete_resource(db, &req.name).await {
+        Ok(_) => Response::OK(()),
+        Err(e) => {
+            log::error!("{:?}", e);
+            Response::ServerError("Database error".into())
+        }
+    }
 }
 
 async fn init_db(rocket: Rocket<Build>) -> fairing::Result {
@@ -71,7 +120,7 @@ fn sqlx_stage() -> AdHoc {
     AdHoc::on_ignite("sqlx stage", |rocket| async {
         rocket
             .attach(AdHoc::try_on_ignite("sqlx db", init_db))
-            .mount("/", routes![update, get, delete])
+            .mount("/", routes![update, get, delete, create])
 
     })
 }

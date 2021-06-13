@@ -3,10 +3,30 @@ use super::*;
 use sqlx::types::Json;
 use std::collections::HashMap;
 
-pub async fn new_resource_db(url: &str) -> Result<PgPool, ()> {
+pub(crate) async fn new_resource_db(url: &str) -> Result<PgPool, ()> {
     Ok(PgPool::connect(url).await.map_err(|e| {
         log::error!("{}", e);
     })?)
+}
+
+/// If the outer result is an `Err`, it is a server error. If the inner result is an `Err`, it is a
+/// client request error. Currently the only client request error possible is that a resource with
+/// the same name already exists.
+pub(crate) async fn create_resource(pool: &PgPool, res: &Resource) -> anyhow::Result<Result<(), String>> {
+    let result = sqlx::query!(
+        r#"
+INSERT INTO resources (name, status, description, other_fields)
+VALUES ($1,$2,$3,$4)
+        "#,
+        res.name, res.status, res.description, Json(&res.other_fields) as _,
+    )
+    .execute(pool)
+    .await?;
+    Ok(match result.rows_affected() {
+        0 => Err("Name already exists".into()),
+        1 => Ok(()),
+        _ => panic!("More than 1 row affected in create"),
+    })
 }
 
 pub(crate) async fn update_resource(pool: &PgPool, res: &Resource) -> anyhow::Result<String> {
@@ -71,6 +91,5 @@ WHERE name = ($1)
     )
     .execute(pool)
     .await?;
-
     Ok(())
 }
