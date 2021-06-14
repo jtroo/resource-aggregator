@@ -8,7 +8,6 @@ dependencies = [
  "env_logger",
  "log",
  "rocket",
- "serde_json",
  "sqlx",
 ]
 
