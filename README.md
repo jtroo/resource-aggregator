@@ -4,7 +4,11 @@ This project is a simple data aggregator for resources on a LAN.
 
 The HTTP server runs on Rocket 0.5 and uses postgresql as the database.
 
-# Quick start
+# Server quick start
+
+These instructions don't serve the client-side files — only the server APIs.
+Tod serve client-side files, see the frontend development(TBD) and build(TBD)
+sections.
 
 ## Prerequisites
 
@@ -28,7 +32,7 @@ sqlx database create
 sqlx migrate run
 ```
 
-## Start the HTTP server
+## Start the server
 
 Using the same terminal as the command above, `cargo run` can be used to start
 the Rocket HTTP server. Using the same terminal is important, because the

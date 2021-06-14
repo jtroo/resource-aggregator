@@ -6,6 +6,7 @@ edition = "2018"
 
 [dependencies]
 rocket = { version = "0.5.0-rc.1", features = ["json"] }
+rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", commit = "510c176" }
 sqlx = { version = "0.5", features = [ "runtime-tokio-rustls", "postgres", "json", "offline" ] }
 anyhow = "1"
 log = "0.4"
