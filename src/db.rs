@@ -1,46 +1,105 @@
-use sqlx::postgres::PgPool;
 use super::*;
 use sqlx::types::Json;
+use sqlx::{postgres::PgPool, Acquire, Connection};
 use std::collections::HashMap;
 
+/// Start a connection pool to the resource database at the provided url.
 pub(crate) async fn new_resource_db(url: &str) -> Result<PgPool, ()> {
     Ok(PgPool::connect(url).await.map_err(|e| {
         log::error!("{}", e);
     })?)
 }
 
-/// If the outer result is an `Err`, it is a server error. If the inner result is an `Err`, it is a
-/// client request error. Currently the only client request error possible is that a resource with
+/// Attempt to create a new resource in the database.
+///
+/// If the outer result is an `Err`, a server error occurred. If the inner result is an `Err`,
+/// there is an error with the input. Currently the only caught input error is that a resource with
 /// the same name already exists.
-pub(crate) async fn create_resource(pool: &PgPool, res: &Resource) -> anyhow::Result<Result<(), String>> {
-    let result = sqlx::query!(
-        r#"
-INSERT INTO resources (name, status, description, other_fields)
-VALUES ($1,$2,$3,$4)
+pub(crate) async fn create_resource(
+    pool: &PgPool,
+    res: &Resource,
+) -> anyhow::Result<Result<(), String>> {
+    Ok(
+        match sqlx::query!(
+            r#"
+        INSERT INTO resources (name, status, description, other_fields)
+        VALUES ($1,$2,$3,$4)
         "#,
-        res.name, res.status, res.description, Json(&res.other_fields) as _,
+            res.name,
+            res.status,
+            res.description,
+            Json(&res.other_fields) as _,
+        )
+        .execute(pool)
+        .await?
+        .rows_affected()
+        {
+            0 => Err("Name already exists".into()),
+            1 => Ok(()),
+            _ => panic!("More than 1 row affected in create"),
+        },
     )
-    .execute(pool)
-    .await?;
-    Ok(match result.rows_affected() {
-        0 => Err("Name already exists".into()),
-        1 => Ok(()),
-        _ => panic!("More than 1 row affected in create"),
-    })
 }
 
-pub(crate) async fn update_resource(pool: &PgPool, res: &Resource) -> anyhow::Result<String> {
-    let rec = sqlx::query!(
-        r#"
-INSERT INTO resources (name, status, description, other_fields)
-VALUES ($1,$2,$3,$4)
-RETURNING name
-        "#,
-        res.name, res.status, res.description, Json(&res.other_fields) as _,
-    )
-    .fetch_one(pool)
-    .await?;
-    Ok(rec.name)
+/// Attempt to update an existing resource in the database
+///
+/// If the outer result is an `Err`, a server error occurred. If the inner result is an `Err`,
+/// there is an error with the input. Currently the only caught input error is that a resource with
+/// the provided name does not exist.
+pub(crate) async fn update_resource(
+    pool: &PgPool,
+    req: ResourceUpdateReq,
+) -> anyhow::Result<Result<(), String>> {
+    let mut conn = pool.acquire().await?;
+    let transaction_result: Result<_, sqlx::Error> = conn
+        .transaction(|tx| {
+            Box::pin(async move {
+                if let Some(status) = req.status {
+                    if sqlx::query!(
+                        r#"UPDATE resources SET status = $1 WHERE name = $2"#,
+                        &status,
+                        &req.name
+                    )
+                    .execute(tx.acquire().await?)
+                    .await?
+                    .rows_affected()
+                        == 0
+                    {
+                        return Ok(Err("Resource does not exist".to_owned()));
+                    }
+                }
+                if let Some(description) = req.description {
+                    sqlx::query!(
+                        r#"UPDATE resources SET description = $1 WHERE name = $2"#,
+                        &description,
+                        &req.name
+                    )
+                    .execute(tx.acquire().await?)
+                    .await?;
+                }
+                if let Some(other_fields) = req.other_fields {
+                    sqlx::query!(
+                        r#"UPDATE resources SET other_fields = $1 WHERE name = $2"#,
+                        Json(other_fields) as _,
+                        &req.name
+                    )
+                    .execute(tx.acquire().await?)
+                    .await?;
+                }
+                if let Some(new_name) = req.new_name {
+                    sqlx::query!(
+                        r#"UPDATE resources SET name = $1 WHERE name = $2"#,
+                        &new_name,
+                        &req.name
+                    )
+                    .execute(tx.acquire().await?)
+                    .await?;
+                }
+                Ok(Ok(()))
+            })
+        })
+        .await;
+    Ok(transaction_result?)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -57,6 +116,9 @@ struct ResourceRow {
     other_fields: Json<OtherFields>,
 }
 
+/// Get all of the resources from the database.
+///
+/// Returns an error if a server error occurs.
 pub(crate) async fn list_resources(pool: &PgPool) -> anyhow::Result<Vec<Resource>> {
     let rows = sqlx::query_as!(
         ResourceRow,
@@ -80,16 +142,24 @@ FROM resources
     Ok(resources)
 }
 
-pub(crate) async fn delete_resource(pool: &PgPool, name: &str) -> anyhow::Result<()> {
-    sqlx::query!(
-        r#"
-DELETE
-FROM resources
-WHERE name = ($1)
-        "#,
-        name
+/// Delete the resource with the given name.
+///
+/// If the outer result is an `Err`, a server error occurred. If the inner result is an `Err`,
+/// there is an error with the input. Currently the only caught input error is that a resource with
+/// the provided name does not exist.
+pub(crate) async fn delete_resource(
+    pool: &PgPool,
+    name: &str,
+) -> anyhow::Result<Result<(), String>> {
+    Ok(
+        match sqlx::query!(r#"DELETE FROM resources WHERE name = $1"#, name)
+            .execute(pool)
+            .await?
+            .rows_affected()
+        {
+            0 => Err("Resource does not exist".into()),
+            1 => Ok(()),
+            _ => panic!("More than 1 row affected in delete"),
+        },
     )
-    .execute(pool)
-    .await?;
-    Ok(())
 }

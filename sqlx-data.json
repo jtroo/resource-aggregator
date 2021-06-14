@@ -1,35 +1,40 @@
 {
   "db": "PostgreSQL",
-  "38851821c8c8320139410efbddc75ca7221fa3aeb91752c5836c5f4306a7955c": {
-    "query": "\nINSERT INTO resources (name, status, description, other_fields)\nVALUES ($1,$2,$3,$4)\nRETURNING name\n        ",
+  "34f12ab2b4f3e7ce1982f892c9e430132561c343de1cf81643d366795718490f": {
+    "query": "DELETE FROM resources WHERE name = $1",
     "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "name",
-          "type_info": "Text"
-        }
-      ],
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "4c7a69e480fbec78e7af195f4623aa5eb5c35005f2c160343f3041bb788f3cfa": {
+    "query": "UPDATE resources SET description = $1 WHERE name = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "5024f2179c8bf98c5086015da2254d8bdc4fde9322f8a539139f400adaf5416d": {
+    "query": "\n        INSERT INTO resources (name, status, description, other_fields)\n        VALUES ($1,$2,$3,$4)\n        ",
+    "describe": {
+      "columns": [],
       "parameters": {
         "Left": [
           "Text",
           "Text",
           "Text",
           "Jsonb"
-        ]
-      },
-      "nullable": [
-        false
-      ]
-    }
-  },
-  "5123d1835cf7e6606b4bc810f066076f309522279af5fdc33c1c322d0d4dda9f": {
-    "query": "\nDELETE\nFROM resources\nWHERE name = ($1)\n        ",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Text"
         ]
       },
       "nullable": []
@@ -71,16 +76,40 @@
       ]
     }
   },
-  "680f91681ebc014c52339161b94aa52ee13c6765ac1a4fe72e8182624c45cd77": {
-    "query": "\nINSERT INTO resources (name, status, description, other_fields)\nVALUES ($1,$2,$3,$4)\n        ",
+  "53293cf303e7025d59a3c2685cb406bb80c39d56dcb533e72b0cf3a7a74658a0": {
+    "query": "UPDATE resources SET other_fields = $1 WHERE name = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Jsonb",
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "8e5090306e63e66be62756db9f27dbf3e261d2f5b4b6ba9d32f99d37b741c77b": {
+    "query": "UPDATE resources SET status = $1 WHERE name = $2",
     "describe": {
       "columns": [],
       "parameters": {
         "Left": [
           "Text",
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "96a01c86197e69027b9969ed2986ba804f09ee3a0c20abdff83e8f0c8f28a1c7": {
+    "query": "UPDATE resources SET name = $1 WHERE name = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
           "Text",
-          "Text",
-          "Jsonb"
+          "Text"
         ]
       },
       "nullable": []

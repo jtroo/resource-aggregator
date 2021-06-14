@@ -1,12 +1,13 @@
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
 use std::collections::HashMap;
 
-use rocket::{Rocket, Build, State};
-use rocket::fs::{FileServer, relative};
-use rocket::serde::{Serialize, Deserialize};
-use rocket::serde::json::Json;
 use rocket::fairing::{self, AdHoc};
+use rocket::fs::{relative, FileServer};
+use rocket::serde::json::Json;
+use rocket::serde::{Deserialize, Serialize};
+use rocket::{Build, Rocket, State};
 
 mod db;
 
@@ -32,6 +33,7 @@ pub struct ResourceCreateReq {
 #[serde(crate = "rocket::serde")]
 pub struct ResourceUpdateReq {
     name: String,
+    new_name: Option<String>,
     status: Option<String>,
     description: Option<String>,
     other_fields: Option<HashMap<String, String>>,
@@ -70,15 +72,21 @@ async fn create(req: Json<ResourceCreateReq>, db: &State<Db>) -> Response {
         Ok(Err(msg)) => Response::BadRequest(msg),
         Err(e) => {
             log::error!("{:?}", e);
-            Response::ServerError("Could not retrieve data".into())
+            Response::ServerError("Could not create resource".into())
         }
     }
 }
 
 #[post("/resource", format = "json", data = "<req>")]
-fn update(req: Json<ResourceUpdateReq>, db: &State<Db>) {
-    println!("{:?}", req);
-    todo!("")
+async fn update(req: Json<ResourceUpdateReq>, db: &State<Db>) -> Response {
+    match db::update_resource(db, req.clone()).await {
+        Ok(Ok(())) => Response::OK(()),
+        Ok(Err(msg)) => Response::BadRequest(msg),
+        Err(e) => {
+            log::error!("{:?}", e);
+            Response::ServerError("Could not update resource".into())
+        }
+    }
 }
 
 #[get("/resource", format = "json")]
@@ -104,7 +112,11 @@ async fn delete(req: Json<ResourceDeleteReq>, db: &State<Db>) -> Response {
 }
 
 async fn init_db(rocket: Rocket<Build>) -> fairing::Result {
-    let db = match db::new_resource_db("TODO").await {
+    let db = match db::new_resource_db(
+        &std::env::var("DATABASE_URL").expect("DATABASE_URL environment variable must be set"),
+    )
+    .await
+    {
         Ok(db) => db,
         Err(_) => return Err(rocket),
     };
@@ -115,13 +127,11 @@ async fn init_db(rocket: Rocket<Build>) -> fairing::Result {
     Ok(rocket.manage(db))
 }
 
-
 fn sqlx_stage() -> AdHoc {
     AdHoc::on_ignite("sqlx stage", |rocket| async {
         rocket
             .attach(AdHoc::try_on_ignite("sqlx db", init_db))
             .mount("/", routes![update, get, delete, create])
-
     })
 }
 
