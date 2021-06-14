@@ -2,7 +2,9 @@
 
 This project is a simple data aggregator for resources on a LAN.
 
-The HTTP server runs on Rocket 0.5 and uses postgresql as the database.
+The HTTP server runs on Rocket 0.5 and uses sqlx+postgresql as the database.
+
+The client side is Angular 12.
 
 # Server quick start
 
@@ -37,3 +39,14 @@ sqlx migrate run
 Using the same terminal as the command above, `cargo run` can be used to start
 the Rocket HTTP server. Using the same terminal is important, because the
 `export` commands set the necessary environment variables.
+
+# Frontend quick start
+
+## Prerequisites
+
+- node (latest or an active LTS version)
+- Angular CLI
+
+## Serve the files
+
+- TBD
