@@ -9,8 +9,8 @@ The client side is Angular 12.
 # Server quick start
 
 These instructions don't serve the client-side files — only the server APIs.
-Tod serve client-side files, see the frontend development(TBD) and build(TBD)
-sections.
+To serve client-side files, see the frontend development(TBD) and build(TBD)
+ections.
 
 ## Prerequisites
 
