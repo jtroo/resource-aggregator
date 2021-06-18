@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Resource } from '../resource';
 
 @Component({
   selector: 'app-resources',
@@ -12,4 +13,9 @@ export class ResourcesComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  resource: Resource = {
+    name: "10.2.21.31",
+    description: "A random server",
+    status: "reserved",
+  }
 }
