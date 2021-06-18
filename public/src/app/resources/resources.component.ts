@@ -19,7 +19,9 @@ export class ResourcesComponent implements OnInit {
   }
 
   getHeroes(): void {
-    this.resources = this.resourceService.getHeroes();
+    this.resourceService
+      .getHeroes()
+      .subscribe((resources) => {this.resources = resources});
   }
 
   onSelect(resource: Resource): void {
