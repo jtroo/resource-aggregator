@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Resource } from '../resource';
-import { RESOURCES } from '../mock-resources'
+import { ResourceService } from '../resource.service';
 
 @Component({
   selector: 'app-resources',
@@ -9,12 +9,17 @@ import { RESOURCES } from '../mock-resources'
 })
 export class ResourcesComponent implements OnInit {
 
-  resources = RESOURCES;
+  resources: Resource[] = [];
   selectedResource?: Resource;
 
-  constructor() { }
+  constructor(private resourceService: ResourceService) { }
 
   ngOnInit(): void {
+    this.getHeroes();
+  }
+
+  getHeroes(): void {
+    this.resources = this.resourceService.getHeroes();
   }
 
   onSelect(resource: Resource): void {
