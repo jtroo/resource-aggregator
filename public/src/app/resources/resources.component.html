@@ -1,3 +1,7 @@
 <h2>{{resource.name | uppercase}} Details</h2>
 <div><span>description: </span>{{resource.description}}</div>
 <div><span>status: </span>{{resource.status}}</div>
+<div>
+  <label for="name">Resource name:</label>
+  <input id="name" [(ngModel)]="resource.name" placeholder="name">
+</div>
