@@ -1,7 +1,18 @@
-<h2>{{resource.name | uppercase}} Details</h2>
-<div><span>description: </span>{{resource.description}}</div>
-<div><span>status: </span>{{resource.status}}</div>
-<div>
-  <label for="name">Resource name:</label>
-  <input id="name" [(ngModel)]="resource.name" placeholder="name">
+<ul class="resources">
+  <li *ngFor="let resource of resources"
+    [class.selected]="resource === selectedResource"
+    (click)="onSelect(resource)">
+    <span class="badge">&nbsp;</span>
+    <span class="name">{{resource.name}}</span>
+  </li>
+</ul>
+
+<div *ngIf="selectedResource">
+  <h2>{{selectedResource.name | uppercase}} Details</h2>
+  <div><span>Description: </span>{{selectedResource.description}}</div>
+  <div><span>Status: </span>{{selectedResource.status}}</div>
+  <div>
+    <label for="name">Name: </label>
+    <input id="name" [(ngModel)]="selectedResource.name" placeholder="name">
+  </div>
 </div>

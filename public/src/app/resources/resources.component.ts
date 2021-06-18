@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Resource } from '../resource';
+import { RESOURCES } from '../mock-resources'
 
 @Component({
   selector: 'app-resources',
@@ -8,14 +9,15 @@ import { Resource } from '../resource';
 })
 export class ResourcesComponent implements OnInit {
 
+  resources = RESOURCES;
+  selectedResource?: Resource;
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  resource: Resource = {
-    name: "10.2.21.31",
-    description: "A random server",
-    status: "reserved",
+  onSelect(resource: Resource): void {
+    this.selectedResource = resource;
   }
 }
