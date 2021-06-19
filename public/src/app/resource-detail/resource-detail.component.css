@@ -2,6 +2,10 @@ table {
   margin:auto;
 }
 
+tr > :first-child {
+  font-weight: bold;
+}
+
 td {
   text-align: left;
   padding-left: 20px;
