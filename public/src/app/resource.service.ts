@@ -12,7 +12,7 @@ export class ResourceService {
 
   constructor(private messageService: MessageService) {}
 
-  getHeroes(): Observable<Resource[]> {
+  getResources(): Observable<Resource[]> {
     const resources = of(RESOURCES);
     this.messageService.add('Fetched resources');
     return resources

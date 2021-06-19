@@ -19,12 +19,12 @@ export class ResourcesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getHeroes();
+    this.getResources();
   }
 
-  getHeroes(): void {
+  getResources(): void {
     this.resourceService
-      .getHeroes()
+      .getResources()
       .subscribe((resources) => {this.resources = resources});
   }
 
