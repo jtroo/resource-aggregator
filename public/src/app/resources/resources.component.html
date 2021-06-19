@@ -8,11 +8,5 @@
 </ul>
 
 <div *ngIf="selectedResource">
-  <h2>{{selectedResource.name | uppercase}} Details</h2>
-  <div><span>Description: </span>{{selectedResource.description}}</div>
-  <div><span>Status: </span>{{selectedResource.status}}</div>
-  <div>
-    <label for="name">Name: </label>
-    <input id="name" [(ngModel)]="selectedResource.name" placeholder="name">
-  </div>
+  <app-resource-detail [resource]="selectedResource"></app-resource-detail>
 </div>

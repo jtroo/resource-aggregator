@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { ResourcesComponent } from './resources/resources.component';
 import { MessagesComponent } from './messages/messages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ResourceDetailComponent } from './resource-detail/resource-detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ResourcesComponent,
     MessagesComponent,
-    DashboardComponent
+    DashboardComponent,
+    ResourceDetailComponent
   ],
   imports: [
     BrowserModule,

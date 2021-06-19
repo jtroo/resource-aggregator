@@ -1,0 +1,11 @@
+<div *ngIf="resource">
+
+  <h2>{{resource.name | uppercase}} Details</h2>
+  <div><span>Description: </span>{{resource.description}}</div>
+  <div><span>Status: </span>{{resource.status}}</div>
+  <div>
+    <label for="resource-name">Resource name: </label>
+    <input id="resource-name" [(ngModel)]="resource.name" placeholder="name">
+  </div>
+
+</div>
