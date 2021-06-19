@@ -1,0 +1,12 @@
+{
+  "/resource": {
+    "target": "http://localhost:8000",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/resource/new": {
+    "target": "http://localhost:8000",
+    "secure": false,
+    "logLevel": "debug"
+  }
+}

@@ -1,7 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { Resource } from './resource';
 import { RESOURCES } from './mock-resources';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { MessageService } from './message.service';
 
 @Injectable({
@@ -10,17 +13,33 @@ import { MessageService } from './message.service';
 
 export class ResourceService {
 
-  constructor(private messageService: MessageService) {}
+  apiURL: string = '';
 
-  getResources(): Observable<Resource[]> {
-    const resources = of(RESOURCES);
-    this.messageService.add('Fetched resources');
-    return resources
+  constructor(
+    private messageService: MessageService,
+    private http: HttpClient,
+  ) {
+    if (isDevMode()) {
+      this.apiURL = 'http://localhost:8000';
+    } else {
+      this.apiURL = '';
+    }
   }
 
-  getResource(name: string): Observable<Resource> {
-    const res = RESOURCES.find((r) => r.name === name)!;
-    this.messageService.add(`fetched resource name=${res.name}`);
-    return of(res);
+  private log(msg: string) {
+    this.messageService.add(`ResourceService: ${msg}`);
+  }
+
+  private resourceURL(): string {
+    return `${this.apiURL}/resource`;
+  }
+
+  getResources(): Observable<Resource[]> {
+    return this.http.get<Resource[]>(this.resourceURL());
+  }
+
+  getResource(name: string): Observable<Resource | undefined> {
+    return this.http.get<Resource[]>(this.resourceURL())
+      .pipe(map((resources) => resources.find((res) => res.name === name)));
   }
 }

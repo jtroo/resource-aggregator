@@ -141,14 +141,14 @@ fn sqlx_stage() -> AdHoc {
 async fn main() -> anyhow::Result<()> {
     env_logger::init();
 
-    let allowed_origins = AllowedOrigins::some_exact(&["http://localhost:8080"]);
+    let allowed_origins = AllowedOrigins::some_exact(&["http://localhost:4200"]);
     let cors = rocket_cors::CorsOptions {
         allowed_origins,
         allowed_methods: vec![Method::Get, Method::Post, Method::Delete]
             .into_iter()
             .map(From::from)
             .collect(),
-        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
+        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept", "Accept-Encoding"]),
         allow_credentials: true,
         ..Default::default()
     }
