@@ -18,4 +18,9 @@ export class ResourceService {
     return resources
   }
 
+  getResource(name: string): Observable<Resource> {
+    const res = RESOURCES.find((r) => r.name === name)!;
+    this.messageService.add(`fetched resource name=${res.name}`);
+    return of(res);
+  }
 }

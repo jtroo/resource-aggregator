@@ -1,19 +1,5 @@
 h2 {
-  text-align: center;
-}
-
-.resources-menu {
-  padding: 0;
-  margin: auto;
-  max-width: 1000px;
-
-  /* flexbox */
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-content: flex-start;
-  align-items: flex-start;
+  text-align: left;
 }
 
 a {
@@ -27,7 +13,7 @@ a {
   text-align: center;
   width: 100%;
   min-width: 70px;
-  margin: .5rem auto;
+  margin: .5rem .5rem .5rem;
   box-sizing: border-box;
 
   /* flexbox */

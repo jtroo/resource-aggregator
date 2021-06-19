@@ -1,6 +1,8 @@
 <h2>Resources Dashboard</h2>
-<div class="resources-menu">
-  <a *ngFor="let resource of resources">
+<div>
+  <a
+    *ngFor="let resource of resources"
+    routerLink="/detail/{{resource.name}}">
     {{resource.name}}
   </a>
 </div>

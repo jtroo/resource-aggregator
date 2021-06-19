@@ -1,7 +1,5 @@
 <ul class="resources">
-  <li *ngFor="let resource of resources"
-    [class.selected]="resource === selectedResource"
-    (click)="onSelect(resource)">
+  <li *ngFor="let resource of resources" routerLink="/detail/{{resource.name}}">
     <span class="badge">&nbsp;</span>
     <span class="name">{{resource.name}}</span>
   </li>

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Resource } from '../resource';
 import { ResourceService } from '../resource.service';
-import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-resources',
@@ -15,7 +14,6 @@ export class ResourcesComponent implements OnInit {
 
   constructor(
     private resourceService: ResourceService,
-    private messageService: MessageService,
   ) {}
 
   ngOnInit(): void {
@@ -28,8 +26,4 @@ export class ResourcesComponent implements OnInit {
       .subscribe((resources) => {this.resources = resources});
   }
 
-  onSelect(resource: Resource): void {
-    this.selectedResource = resource;
-    this.messageService.add(`Selected resource ${resource.name}`);
-  }
 }
