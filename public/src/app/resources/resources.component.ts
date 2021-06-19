@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Resource } from '../resource';
 import { ResourceService } from '../resource.service';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-resources',
@@ -12,7 +13,10 @@ export class ResourcesComponent implements OnInit {
   resources: Resource[] = [];
   selectedResource?: Resource;
 
-  constructor(private resourceService: ResourceService) { }
+  constructor(
+    private resourceService: ResourceService,
+    private messageService: MessageService,
+  ) {}
 
   ngOnInit(): void {
     this.getHeroes();
@@ -26,5 +30,6 @@ export class ResourcesComponent implements OnInit {
 
   onSelect(resource: Resource): void {
     this.selectedResource = resource;
+    this.messageService.add(`Selected resource ${resource.name}`);
   }
 }
