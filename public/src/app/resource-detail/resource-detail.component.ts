@@ -29,7 +29,7 @@ export class ResourceDetailComponent implements OnInit {
     }
     if (this.resource.reserved_until === 0) {
       if (this.resource.reserved_by) {
-        return 'Indefinitely';
+        return 'Until manually cleared';
       } else {
         return 'Unreserved';
       }
