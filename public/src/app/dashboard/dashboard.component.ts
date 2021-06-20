@@ -18,6 +18,9 @@ export class DashboardComponent implements OnInit {
 
   getResources(): void {
     this.resourceService.getResources()
-      .subscribe((resources) => this.resources = resources.slice(1, 5));
+      .subscribe((resources) => {
+        this.resources = resources.slice(0, 4);
+        console.log(this.resources)
+      });
   }
 }

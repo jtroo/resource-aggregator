@@ -6,12 +6,12 @@
     <tr>
       <td>Description:</td><td>{{resource.description}}</td>
     </tr>
-    <tr
-      ><td>Status:</td><td>{{resource.status}}</td>
-    </tr>
     <tr>
-      <td><label for="resource-name">Resource name: </label></td>
-      <td><input id="resource-name" [(ngModel)]="resource.name" placeholder="name"></td>
+      <td>Status:</td><td>{{resource.status}}</td>
+    </tr>
+    <tr *ngFor="let key of resourceOtherFieldsKeys">
+      <td>{{key | titlecase}}:</td>
+      <td>{{resource.other_fields[key]}}</td>
     </tr>
   </table>
 

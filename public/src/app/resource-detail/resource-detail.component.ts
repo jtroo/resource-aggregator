@@ -12,6 +12,7 @@ import { Resource } from '../resource';
 
 export class ResourceDetailComponent implements OnInit {
   @Input() resource?: Resource;
+  resourceOtherFieldsKeys: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +26,11 @@ export class ResourceDetailComponent implements OnInit {
   getHero(): void {
     const name = String(this.route.snapshot.paramMap.get('name'));
     this.resourceService.getResource(name)
-      .subscribe((resource) => {this.resource = resource});
+      .subscribe((resource) => {
+        this.resource = resource;
+        if (resource) {
+          this.resourceOtherFieldsKeys = Object.keys(resource.other_fields);
+        }
+      });
   }
 }
