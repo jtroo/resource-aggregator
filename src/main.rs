@@ -4,7 +4,7 @@ extern crate rocket;
 use std::collections::HashMap;
 
 use rocket::fairing::{self, AdHoc};
-use rocket::fs::{relative, FileServer};
+use rocket::fs::{FileServer, NamedFile};
 use rocket::http::Method;
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
@@ -137,6 +137,11 @@ fn sqlx_stage() -> AdHoc {
     })
 }
 
+#[catch(404)]
+pub async fn spa_handler() -> NamedFile {
+    NamedFile::open("./public/index.html").await.unwrap()
+}
+
 #[rocket::main]
 async fn main() -> anyhow::Result<()> {
     env_logger::init();
@@ -157,7 +162,8 @@ async fn main() -> anyhow::Result<()> {
     if let Err(e) = rocket::build()
         .attach(sqlx_stage())
         .attach(cors)
-        .mount("/", FileServer::from(relative!("public")))
+        .mount("/", FileServer::from("./public/"))
+        .register("/", catchers![spa_handler])
         .launch()
         .await
     {
