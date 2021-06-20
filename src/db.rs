@@ -77,6 +77,24 @@ pub(crate) async fn update_resource(
                     .execute(tx.acquire().await?)
                     .await?;
                 }
+                if let Some(reserved_until) = req.reserved_until {
+                    sqlx::query!(
+                        r#"UPDATE resources SET reserved_until = $1 WHERE name = $2"#,
+                        reserved_until,
+                        &req.name
+                    )
+                    .execute(tx.acquire().await?)
+                    .await?;
+                }
+                if let Some(reserved_by) = req.reserved_by {
+                    sqlx::query!(
+                        r#"UPDATE resources SET reserved_by = $1 WHERE name = $2"#,
+                        reserved_by,
+                        &req.name
+                    )
+                    .execute(tx.acquire().await?)
+                    .await?;
+                }
                 if let Some(other_fields) = req.other_fields {
                     sqlx::query!(
                         r#"UPDATE resources SET other_fields = $1 WHERE name = $2"#,
@@ -113,6 +131,8 @@ struct ResourceRow {
     name: String,
     status: String,
     description: String,
+    reserved_until: i64,
+    reserved_by: String,
     other_fields: Json<OtherFields>,
 }
 
@@ -123,7 +143,7 @@ pub(crate) async fn list_resources(pool: &PgPool) -> anyhow::Result<Vec<Resource
     let rows = sqlx::query_as!(
         ResourceRow,
         r#"
-SELECT name, status, description, other_fields as "other_fields: Json<OtherFields>"
+SELECT name, status, description, reserved_until, reserved_by, other_fields as "other_fields: Json<OtherFields>"
 FROM resources
         "#
     )
@@ -136,6 +156,8 @@ FROM resources
             name: row.name,
             status: row.status,
             description: row.description,
+            reserved_until: row.reserved_until,
+            reserved_by: row.reserved_by,
             other_fields,
         });
     }

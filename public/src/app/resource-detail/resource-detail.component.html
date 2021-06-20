@@ -9,6 +9,12 @@
     <tr>
       <td>Status:</td><td>{{resource.status}}</td>
     </tr>
+    <tr>
+      <td>Reserved Until:</td><td>{{reservedUntil()}}</td>
+    </tr>
+    <tr>
+      <td>Reserved By:</td><td>{{resource.reserved_by || "Unreserved"}}</td>
+    </tr>
     <tr *ngFor="let key of resourceOtherFieldsKeys">
       <td>{{key | titlecase}}:</td>
       <td>{{resource.other_fields[key]}}</td>

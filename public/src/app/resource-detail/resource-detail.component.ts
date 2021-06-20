@@ -23,6 +23,24 @@ export class ResourceDetailComponent implements OnInit {
     this.getHero();
   }
 
+  reservedUntil(): string {
+    if (!this.resource) {
+      return 'N/A';
+    }
+    if (this.resource.reserved_until === 0) {
+      if (this.resource.reserved_by) {
+        return 'Indefinitely';
+      } else {
+        return 'Unreserved';
+      }
+    }
+    const date = new Date(this.resource.reserved_until * 1000);
+    let hours = ('00' + date.getHours()).slice(-2);
+    let minutes = ('00' + date.getMinutes()).slice(-2);
+    let seconds = ('00' + date.getSeconds()).slice(-2);
+    return `${date.toISOString().split('T')[0]} ${hours}:${minutes}:${seconds}`;
+  }
+
   getHero(): void {
     const name = String(this.route.snapshot.paramMap.get('name'));
     this.resourceService.getResource(name)

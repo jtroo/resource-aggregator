@@ -13,12 +13,16 @@ use rocket_cors::{AllowedHeaders, AllowedOrigins};
 
 mod db;
 
+type UnixTime = i64;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 pub struct Resource {
     name: String,
     status: String,
     description: String,
+    reserved_until: UnixTime,
+    reserved_by: String,
     other_fields: HashMap<String, String>,
 }
 
@@ -38,6 +42,8 @@ pub struct ResourceUpdateReq {
     new_name: Option<String>,
     status: Option<String>,
     description: Option<String>,
+    reserved_until: Option<UnixTime>,
+    reserved_by: Option<String>,
     other_fields: Option<HashMap<String, String>>,
 }
 
@@ -67,6 +73,8 @@ async fn create(req: Json<ResourceCreateReq>, db: &State<Db>) -> Response {
         name: req.name.clone(),
         status: req.status.clone(),
         description: req.description.clone(),
+        reserved_until: Default::default(),
+        reserved_by: Default::default(),
         other_fields: req.other_fields.clone().unwrap_or_default(),
     };
     match db::create_resource(db, &new_resource).await {
