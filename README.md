@@ -2,6 +2,9 @@
 
 This project is a simple data aggregator for resources on a LAN.
 
+The LAN wording is important because there are no security considerations done
+for the code.
+
 The HTTP server runs on Rocket 0.5 and uses sqlx+postgresql as the database.
 
 The client side is Angular 12.
