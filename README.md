@@ -45,8 +45,59 @@ the Rocket HTTP server. Using the same terminal is important, because the
 ## Prerequisites
 
 - node (latest or an active LTS version)
-- Angular CLI
+- Angular CLI (Angular 12)
 
 ## Serve the files
 
-- TBD
+```
+cd public
+ng serve
+```
+
+# Example APIs
+
+## Get all resources
+
+```sh
+curl http://localhost:8000/resource
+```
+
+## Create a new resource
+
+``` sh
+# all fields except `other_fields` are required
+curl http://localhost:8000/resource/new \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  --data '{"name":"hello","status":"hi","description":"hello world"}'
+```
+
+## Update an existing resource
+
+``` sh
+# all fields except `name` are optional
+
+curl http://localhost:8000/resource \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  --data '{"name":"hello","description":"this is a useful description"}'
+
+curl http://localhost:8000/resource \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  --data '{"name":"hello","status":"unused"}'
+
+curl http://localhost:8000/resource \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  --data '{"name":"hello","other_fields":{"hi":"hello"}}'
+```
+
+## Delete a resource
+
+```sh
+curl http://localhost:8000/resource \
+  -X DELETE \
+  -H 'Content-Type: application/json' \
+  --data '{"name":"hello"}'
+```
