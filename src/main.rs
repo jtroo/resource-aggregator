@@ -161,7 +161,7 @@ async fn main() -> anyhow::Result<()> {
             .into_iter()
             .map(From::from)
             .collect(),
-        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept", "Accept-Encoding"]),
+        allowed_headers: AllowedHeaders::all(),
         allow_credentials: true,
         ..Default::default()
     }
