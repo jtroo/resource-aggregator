@@ -1,6 +1,6 @@
 # Rocket Resource Aggregator
 
-This project is a simple data aggregator for resources on a LAN.
+This project is a basic data aggregator for resources on a LAN.
 
 The LAN wording is important because there are no security considerations done
 for the code.
@@ -39,9 +39,13 @@ sqlx migrate run
 
 ## Start the server
 
-Using the same terminal as the command above, `cargo run` can be used to start
-the Rocket HTTP server. Using the same terminal is important, because the
-`export` commands set the necessary environment variables.
+Use the commands below to start the Rocket HTTP server:
+
+```
+export DATABASE_URL=postgres://default@localhost:6000
+export PGPASSWORD=default
+cargo run
+```
 
 # Frontend quick start
 
