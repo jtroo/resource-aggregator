@@ -1,3 +1,34 @@
 <div *ngIf="resource">
-  <p>resource-reserve works!</p>
+  <h2>Reserve {{resource.name}}</h2>
+  <table>
+    <tr>
+      <td>Duration:</td>
+      <td>
+        <select>
+          <option [ngValue]="null" disabled>Choose duration</option>
+          <option *ngFor="let duration of durations" [ngValue]="duration.value">
+          {{duration.label}}
+          </option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Your name:</td>
+      <td>
+        <input type="text"/>
+      </td>
+    </tr>
+    <tr>
+      <td>Reserve:</td>
+      <td>
+        <button class="reserve">Reserve</button>
+      </td>
+    </tr>
+    <tr>
+      <td>Clear:</td>
+      <td>
+        <button class="clear">Clear Reservation</button>
+      </td>
+    </tr>
+  </table>
 </div>

@@ -2,15 +2,15 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { Resource } from '../resource';
 
-const RESERVED_TIMES = {
-  '30 minutes': 1800,
-  '1 hour': 3600,
-  '2 hours': 7200,
-  '4 hours': 14400,
-  '1 day': 86400,
-  '1 week': 604800,
-  'Indefinitely': 0,
-}
+const RESERVATION_DURATIONS = [
+  { label: '30 minutes', value: 1800 },
+  { label: '1 hour', value: 3600},
+  { label: '2 hours', value: 7200},
+  { label: '4 hours', value: 14400},
+  { label: '1 day', value: 86400},
+  { label: '1 week', value: 604800},
+  { label: 'Until cleared', value: 0},
+];
 
 @Component({
   selector: 'app-resource-reserve',
@@ -20,11 +20,12 @@ const RESERVED_TIMES = {
 export class ResourceReserveComponent implements OnInit {
 
   @Input() resource?: Resource;
+  durations = RESERVATION_DURATIONS;
 
+  constructor() {}
 
-  constructor() { }
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-  }
-
+  reserve(): void {}
+  clearReservation(): void {}
 }
