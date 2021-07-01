@@ -17,10 +17,11 @@ export class ResourceDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private resourceService: ResourceService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    this.getHero();
+    this.getResource();
   }
 
   reservedUntil(): string {
@@ -41,13 +42,37 @@ export class ResourceDetailComponent implements OnInit {
     return `${date.toISOString().split('T')[0]} ${hours}:${minutes}:${seconds}`;
   }
 
-  getHero(): void {
+  getResource(): void {
     const name = String(this.route.snapshot.paramMap.get('name'));
     this.resourceService.getResource(name)
       .subscribe((resource) => {
         this.resource = resource;
         if (resource) {
           this.resourceOtherFieldsKeys = Object.keys(resource.other_fields);
+        }
+      });
+  }
+
+  reserveResource(): void {
+    if (!this.resource) {
+      return;
+    }
+    this.resourceService.reserve(this.resource, 'ME!', 0)
+      .subscribe((errmsg) => {
+        if (errmsg.trim()) {
+          console.log(`Error reserving ${this.resource && this.resource.name || ''}: ${errmsg}`);
+        }
+      });
+  }
+
+  clearReservation(): void {
+    if (!this.resource) {
+      return;
+    }
+    this.resourceService.clearReservation(this.resource)
+      .subscribe((errmsg) => {
+        if (errmsg.trim()) {
+          console.log(`Error clearing reservation for ${this.resource && this.resource.name || ''}: ${errmsg}`);
         }
       });
   }

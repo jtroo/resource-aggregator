@@ -37,4 +37,27 @@ export class ResourceService {
         ))
       );
   }
+
+  reserve(resource: Resource, reservedBy: string, reservedFor: number): Observable<string> {
+    const reqResource = {
+      name: resource.name,
+      reserved_by: reservedBy,
+      reserved_until: 0,
+    };
+    if (reservedFor === 0) {
+      resource.reserved_until = 0;
+    } else {
+      resource.reserved_until = (Date.now() / 1000) + reservedFor;
+    }
+    return this.http.post<string>(this.resourceURL(), reqResource);
+  }
+
+  clearReservation(resource: Resource): Observable<string> {
+    const reqResource = {
+      name: resource.name,
+      reserved_by: '',
+      reserved_until: 0,
+    };
+    return this.http.post<string>(this.resourceURL(), reqResource);
+  }
 }

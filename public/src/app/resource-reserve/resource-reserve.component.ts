@@ -9,7 +9,7 @@ const RESERVED_TIMES = {
   '4 hours': 14400,
   '1 day': 86400,
   '1 week': 604800,
-  'Indefinitely': 1,
+  'Indefinitely': 0,
 }
 
 @Component({
