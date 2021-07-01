@@ -30,7 +30,7 @@ export class ResourceDetailComponent implements OnInit {
     }
     if (this.resource.reserved_until === 0) {
       if (this.resource.reserved_by) {
-        return 'Until manually cleared';
+        return 'Until cleared';
       } else {
         return 'Unreserved';
       }
@@ -49,30 +49,6 @@ export class ResourceDetailComponent implements OnInit {
         this.resource = resource;
         if (resource) {
           this.resourceOtherFieldsKeys = Object.keys(resource.other_fields);
-        }
-      });
-  }
-
-  reserveResource(): void {
-    if (!this.resource) {
-      return;
-    }
-    this.resourceService.reserve(this.resource, 'ME!', 0)
-      .subscribe((errmsg) => {
-        if (errmsg.trim()) {
-          console.log(`Error reserving ${this.resource && this.resource.name || ''}: ${errmsg}`);
-        }
-      });
-  }
-
-  clearReservation(): void {
-    if (!this.resource) {
-      return;
-    }
-    this.resourceService.clearReservation(this.resource)
-      .subscribe((errmsg) => {
-        if (errmsg.trim()) {
-          console.log(`Error clearing reservation for ${this.resource && this.resource.name || ''}: ${errmsg}`);
         }
       });
   }

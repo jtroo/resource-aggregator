@@ -2,6 +2,10 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+input {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 table {
   margin:auto;
   border-spacing: 5px;
@@ -24,7 +28,6 @@ input {
 }
 
 td > button {
-  padding-top: 3px;
   width: 125px;
   display: inline-block;
   border-radius: 4px;

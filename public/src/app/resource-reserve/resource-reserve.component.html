@@ -4,10 +4,10 @@
     <tr>
       <td>Duration:</td>
       <td>
-        <select>
+        <select [(ngModel)]="reservedFor">
           <option [ngValue]="null" disabled>Choose duration</option>
           <option *ngFor="let duration of durations" [ngValue]="duration.value">
-          {{duration.label}}
+            {{duration.label}}
           </option>
         </select>
       </td>
@@ -15,19 +15,19 @@
     <tr>
       <td>Your name:</td>
       <td>
-        <input type="text"/>
+        <input [(ngModel)]="reservedBy" type="text"/>
       </td>
     </tr>
     <tr>
       <td>Reserve:</td>
       <td>
-        <button class="reserve">Reserve</button>
+        <button class="reserve" (click)="reserve()">Reserve</button>
       </td>
     </tr>
     <tr>
       <td>Clear:</td>
       <td>
-        <button class="clear">Clear Reservation</button>
+        <button class="clear" (click)="clear()">Clear Reservation</button>
       </td>
     </tr>
   </table>
