@@ -41,7 +41,7 @@ export class ResourceReserveComponent implements OnInit {
       return;
     }
     if (!this.reservedBy.trim()) {
-      setTimeout(() => {this.reservedErr = 'Please input your name'}, 250);
+      setTimeout(() => {this.reservedErr = 'Please input your name'}, 100);
       return;
     }
     this.resourceService.reserve(this.resource, this.reservedBy, this.reservedFor)
@@ -62,7 +62,10 @@ export class ResourceReserveComponent implements OnInit {
       return;
     }
     if (this.reservedBy !== this.resource.reserved_by) {
-      setTimeout(() => {this.reservedErr = 'Please input the name of the current reservee'}, 250);
+      setTimeout(() => {this.reservedErr = 'Please input the name of the current reservee'}, 100);
+      return;
+    } else if (!this.resource.reserved_by && !this.resource.reserved_until) {
+      setTimeout(() => {this.reservedErr = 'The resource is not currently reserved'}, 100);
       return;
     }
     this.resourceService.clearReservation(this.resource)
