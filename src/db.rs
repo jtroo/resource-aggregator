@@ -173,7 +173,10 @@ pub(crate) async fn delete_resource(
 /// Set the values of `reserved_until` and `reserved_by` to the appropriate values for being
 /// unreserved for all the rows that have a `reserved_until` value that is in the past.
 pub(crate) async fn clear_expired_reservations(pool: &PgPool) {
-    let epoch_t = time::SystemTime::now().duration_since(time::UNIX_EPOCH).expect("could not get time since epoch").as_secs() as i64;
+    let epoch_t = time::SystemTime::now()
+        .duration_since(time::UNIX_EPOCH)
+        .expect("could not get time since epoch")
+        .as_secs() as i64;
     match sqlx::query!(
         r#"
             UPDATE resources
@@ -181,14 +184,17 @@ pub(crate) async fn clear_expired_reservations(pool: &PgPool) {
             WHERE reserved_until < $1 AND reserved_until != 0
         "#,
         epoch_t,
-    ).execute(pool).await {
+    )
+    .execute(pool)
+    .await
+    {
         Ok(v) => {
             let rows_affected = v.rows_affected();
             match rows_affected {
-                0 => {},
+                0 => {}
                 _ => log::warn!("Cleared {} expired reservation(s)", rows_affected),
             };
-        },
+        }
         Err(e) => {
             log::error!("{:?}", e);
         }

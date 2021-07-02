@@ -7,8 +7,8 @@ use rocket::fairing::{self, AdHoc};
 use rocket::fs::{FileServer, NamedFile};
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
-use rocket::{Build, Rocket, State};
 use rocket::tokio;
+use rocket::{Build, Rocket, State};
 use sqlx::migrate::MigrateDatabase;
 
 mod db;
@@ -127,7 +127,8 @@ fn create_clear_expired_reservations_worker(db: Db) {
 }
 
 async fn init_db(rocket: Rocket<Build>) -> fairing::Result {
-    let db_url = std::env::var("DATABASE_URL").expect("DATABASE_URL environment variable must be set");
+    let db_url =
+        std::env::var("DATABASE_URL").expect("DATABASE_URL environment variable must be set");
     if let Err(e) = sqlx::Postgres::create_database(&db_url).await {
         info!("Could not create database: {}", e);
     } else {
@@ -161,7 +162,6 @@ pub async fn spa_handler() -> NamedFile {
 #[rocket::main]
 async fn main() -> anyhow::Result<()> {
     env_logger::init();
-
 
     let rocket = rocket::build()
         .attach(sqlx_stage())
