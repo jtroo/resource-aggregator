@@ -17,14 +17,14 @@ also fulfills a personal need.
 These instructions don't serve the client-side files — only the server APIs
 which will allow CORS requests from the default Angular `ng serve` address.
 
-To serve client-side files, see the [front-end code](public/). and the
-[build section](#Build).
+To serve client-side files, see the [front-end](#Frontend-quick-start) and
+[build](#Build) sections.
 
-## Prerequisites
+## Dependencies
 
 - Docker
 - docker-compose
-- rustc 1.52.1
+- rustc `>= 1.52.1`
 - [sqlx CLI](https://github.com/launchbadge/sqlx/blob/master/sqlx-cli/README.md)
 
 ## Set up a database
@@ -52,7 +52,7 @@ cargo run --features dev_cors
 
 # Frontend quick start
 
-## Prerequisites
+## Dependencies
 
 - node (latest or an active LTS version)
 - Angular CLI (Angular 12)
@@ -117,6 +117,12 @@ curl http://localhost:8000/resource \
 These are the instructions to generate a `.tar.gz` file containing all that is
 needed to run the application on another device. The other device needs to have
 have docker and docker-compose installed.
+
+## Dependencies
+
+Building depends on both the [server](#Dependencies) and [front-end](#Dependencies-1) dependencies.
+
+## Commands
 
 ```sh
 # create the archive
