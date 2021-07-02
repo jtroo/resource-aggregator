@@ -30,13 +30,11 @@ To serve client-side files, see the [front-end](#Frontend-quick-start) and
 ## Set up a database
 
 There is a [docker-compose.yml](./docker-compose.yml) file that can be used to
-quickly set up a postgres docker container. Run the commands below to create a
-new database from scratch.
+quickly set up a postgres docker container. Run the command below from the root
+folder of the git repository:
 
 ```
 docker-compose up -d
-export DATABASE_URL=postgres://default@localhost:6000
-export PGPASSWORD=default
 ```
 
 ## Start the server
