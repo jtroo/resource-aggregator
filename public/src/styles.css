@@ -29,3 +29,7 @@ body, input[type="text"], button {
         -ms-user-select: none;
             user-select: none;
 }
+
+.error {
+  color: #CC2222;
+}

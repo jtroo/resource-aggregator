@@ -25,6 +25,7 @@ export class ResourceReserveComponent implements OnInit {
   durations = RESERVATION_DURATIONS;
   reservedBy = "";
   reservedFor: number;
+  reservedErr?: string;
 
   constructor(
     private resourceService: ResourceService,
@@ -35,7 +36,12 @@ export class ResourceReserveComponent implements OnInit {
   ngOnInit(): void {}
 
   reserve(): void {
+    this.reservedErr = '';
     if (!this.resource) {
+      return;
+    }
+    if (!this.reservedBy.trim()) {
+      setTimeout(() => {this.reservedErr = 'Please input your name'}, 250);
       return;
     }
     this.resourceService.reserve(this.resource, this.reservedBy, this.reservedFor)
