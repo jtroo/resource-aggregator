@@ -46,14 +46,23 @@ export class ResourceReserveComponent implements OnInit {
     }
     this.resourceService.reserve(this.resource, this.reservedBy, this.reservedFor)
       .subscribe((errmsg) => {
-        if (errmsg.trim()) {
-          console.log(`Error reserving ${this.resource && this.resource.name || ''}: ${errmsg}`);
+        if (this.resource) {
+          if (errmsg.trim()) {
+            console.log(`Error reserving ${this.resource.name || ''}: ${errmsg}`);
+          } else {
+            this.resource.reserved_by = this.reservedBy;
+          }
         }
       });
   }
 
   clear(): void {
+    this.reservedErr = '';
     if (!this.resource) {
+      return;
+    }
+    if (this.reservedBy !== this.resource.reserved_by) {
+      setTimeout(() => {this.reservedErr = 'Please input the name of the current reservee'}, 250);
       return;
     }
     this.resourceService.clearReservation(this.resource)
