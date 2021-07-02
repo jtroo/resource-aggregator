@@ -1,6 +1,9 @@
 <ul class="resources">
   <li *ngFor="let resource of resources" routerLink="/detail/{{resource.name}}">
-    <span class="badge">&nbsp;</span>
+    <span class="badge">
+      <span *ngIf="resource.reserved_by">🔴</span>
+      <span *ngIf="!resource.reserved_by">🟢</span>
+    </span>
     <span class="name">{{resource.name}}</span>
   </li>
 </ul>

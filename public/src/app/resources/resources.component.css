@@ -3,7 +3,7 @@
   margin: auto;
   list-style-type: none;
   padding: 0;
-  width: 15em;
+  width: 16em;
 }
 .resources li {
   cursor: pointer;
@@ -37,10 +37,10 @@
   font-size: small;
   color: white;
   padding: 0.8em 0.7em 0 0.7em;
-  background-color:#405061;
+  background-color:#CCC;
   line-height: 1.2em;
   position: relative;
-  left: -1px;
+  left: -3px;
   top: -4px;
   height: 1.8em;
   margin-right: 1.7em;
