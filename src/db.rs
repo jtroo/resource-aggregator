@@ -2,6 +2,7 @@ use super::*;
 use sqlx::types::Json;
 use sqlx::{postgres::PgPool, Acquire, Connection};
 use std::collections::HashMap;
+use std::time;
 
 /// Start a connection pool to the resource database at the provided url.
 pub(crate) async fn new_resource_db(url: &str) -> Result<PgPool, ()> {
@@ -184,4 +185,29 @@ pub(crate) async fn delete_resource(
             _ => panic!("More than 1 row affected in delete"),
         },
     )
+}
+
+/// Set the values of `reserved_until` and `reserved_by` to the appropriate values for being
+/// unreserved for all the rows that have a `reserved_until` value that is in the past.
+pub(crate) async fn clear_expired_reservations(pool: &PgPool) {
+    let epoch_t = time::SystemTime::now().duration_since(time::UNIX_EPOCH).expect("could not get time since epoch").as_secs() as i64;
+    match sqlx::query!(
+        r#"
+            UPDATE resources
+            SET reserved_until = 0, reserved_by = ''
+            WHERE reserved_until < $1 AND reserved_until != 0
+        "#,
+        epoch_t,
+    ).execute(pool).await {
+        Ok(v) => {
+            let rows_affected = v.rows_affected();
+            match rows_affected {
+                0 => {},
+                _ => log::warn!("Cleared {} expired reservation(s)", rows_affected),
+            };
+        },
+        Err(e) => {
+            log::error!("{:?}", e);
+        }
+    }
 }

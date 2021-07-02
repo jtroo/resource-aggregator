@@ -10,6 +10,7 @@ use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::{Build, Rocket, State};
 use rocket_cors::{AllowedHeaders, AllowedOrigins};
+use rocket::tokio;
 
 mod db;
 
@@ -121,6 +122,15 @@ async fn delete(req: Json<ResourceDeleteReq>, db: &State<Db>) -> Response {
     }
 }
 
+fn create_clear_expired_reservations_worker(db: Db) {
+    tokio::spawn(async move {
+        loop {
+            tokio::time::sleep(std::time::Duration::from_secs(10)).await;
+            let _ = db::clear_expired_reservations(&db).await;
+        }
+    });
+}
+
 async fn init_db(rocket: Rocket<Build>) -> fairing::Result {
     let db = match db::new_resource_db(
         &std::env::var("DATABASE_URL").expect("DATABASE_URL environment variable must be set"),
@@ -134,6 +144,7 @@ async fn init_db(rocket: Rocket<Build>) -> fairing::Result {
         error!("Failed to initialize SQLx database: {}", e);
         return Err(rocket);
     }
+    create_clear_expired_reservations_worker(db.clone());
     Ok(rocket.manage(db))
 }
 

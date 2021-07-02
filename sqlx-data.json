@@ -92,6 +92,18 @@
       "nullable": []
     }
   },
+  "c507d1c1141ff6201fcf3a25aa0da29766484ceccef0e0551a854b4bbaa33cb6": {
+    "query": "\n            UPDATE resources\n            SET reserved_until = 0, reserved_by = ''\n            WHERE reserved_until < $1 AND reserved_until != 0\n        ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "db82ee089c03ff532a41cf996e63ecbbadf3ee391f7683a1d01c7d030127c383": {
     "query": "UPDATE resources SET reserved_by = $1 WHERE name = $2",
     "describe": {
