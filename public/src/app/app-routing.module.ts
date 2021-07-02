@@ -5,8 +5,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ResourceDetailComponent } from './resource-detail/resource-detail.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/resources', pathMatch: 'full' },
-  { path: 'resources', component: ResourcesComponent },
+  { path: '', redirectTo: '/list', pathMatch: 'full' },
+  { path: 'list', component: ResourcesComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'detail/:name', component: ResourceDetailComponent },
 ];
