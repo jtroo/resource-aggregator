@@ -180,8 +180,10 @@ async fn main() -> anyhow::Result<()> {
 
     if let Err(e) = rocket::build()
         .attach(sqlx_stage())
-        .attach(cors)
+        .attach(cors.clone())
+        .manage(cors)
         .mount("/", FileServer::from("./public/"))
+        .mount("/", rocket_cors::catch_all_options_routes())
         .register("/", catchers![spa_handler])
         .launch()
         .await
