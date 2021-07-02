@@ -114,7 +114,7 @@ curl http://localhost:8000/resource \
 
 These are the instructions to generate a `.tar.gz` file containing all that is
 needed to run the application on another device. The other device needs to have
-have docker and docker-compose installed.
+docker and docker-compose installed.
 
 ## Dependencies
 
