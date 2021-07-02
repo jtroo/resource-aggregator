@@ -14,9 +14,10 @@ also fulfills a personal need.
 
 # Server quick start
 
-These instructions don't serve the client-side files — only the server APIs.
+These instructions don't serve the client-side files — only the server APIs
+which will allow CORS requests from the default Angular `ng serve` address.
 
-To serve client-side files, see the [front-end code](public/) and the
+To serve client-side files, see the [front-end code](public/). and the
 [build section](#Build).
 
 ## Prerequisites
@@ -36,9 +37,6 @@ new database from scratch.
 docker-compose up -d
 export DATABASE_URL=postgres://default@localhost:6000
 export PGPASSWORD=default
-sqlx database drop
-sqlx database create
-sqlx migrate run
 ```
 
 ## Start the server
@@ -48,7 +46,8 @@ Use the commands below to start the Rocket HTTP server:
 ```
 export DATABASE_URL=postgres://default@localhost:6000
 export PGPASSWORD=default
-cargo run
+export SQLX_OFFLINE=true
+cargo run --features dev_cors
 ```
 
 # Frontend quick start

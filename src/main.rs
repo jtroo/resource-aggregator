@@ -5,11 +5,9 @@ use std::collections::HashMap;
 
 use rocket::fairing::{self, AdHoc};
 use rocket::fs::{FileServer, NamedFile};
-use rocket::http::Method;
 use rocket::serde::json::Json;
 use rocket::serde::{Deserialize, Serialize};
 use rocket::{Build, Rocket, State};
-use rocket_cors::{AllowedHeaders, AllowedOrigins};
 use rocket::tokio;
 use sqlx::migrate::MigrateDatabase;
 
@@ -168,32 +166,41 @@ pub async fn spa_handler() -> NamedFile {
 async fn main() -> anyhow::Result<()> {
     env_logger::init();
 
-    let allowed_origins = AllowedOrigins::some_exact(&["http://localhost:4200"]);
-    let cors = rocket_cors::CorsOptions {
-        allowed_origins,
-        allowed_methods: vec![Method::Get, Method::Post, Method::Delete]
-            .into_iter()
-            .map(From::from)
-            .collect(),
-        allowed_headers: AllowedHeaders::all(),
-        allow_credentials: true,
-        ..Default::default()
-    }
-    .to_cors()?;
 
-    if let Err(e) = rocket::build()
+    let rocket = rocket::build()
         .attach(sqlx_stage())
-        .attach(cors.clone())
-        .manage(cors)
         .mount("/", FileServer::from("./public/"))
-        .mount("/", rocket_cors::catch_all_options_routes())
-        .register("/", catchers![spa_handler])
-        .launch()
-        .await
-    {
+        .register("/", catchers![spa_handler]);
+
+    #[cfg(feature = "dev_cors")]
+    let rocket = {
+        use rocket::http::Method;
+        use rocket_cors::{AllowedHeaders, AllowedOrigins};
+
+        let allowed_origins = AllowedOrigins::some_exact(&["http://localhost:4200"]);
+        let cors = rocket_cors::CorsOptions {
+            allowed_origins,
+            allowed_methods: vec![Method::Get, Method::Post, Method::Delete]
+                .into_iter()
+                .map(From::from)
+                .collect(),
+            allowed_headers: AllowedHeaders::all(),
+            allow_credentials: true,
+            ..Default::default()
+        }
+        .to_cors()?;
+
+        rocket
+            .mount("/", rocket_cors::catch_all_options_routes())
+            .attach(cors.clone())
+            .manage(cors)
+    };
+
+    if let Err(e) = rocket.launch().await {
         println!("Rocket didn't launch");
         // drop the error to get a Rocket-formatted panic.
         drop(e);
     };
+
     Ok(())
 }
