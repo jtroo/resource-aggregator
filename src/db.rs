@@ -23,11 +23,10 @@ pub(crate) async fn create_resource(
     Ok(
         match sqlx::query!(
             r#"
-        INSERT INTO resources (name, status, description, other_fields)
-        VALUES ($1,$2,$3,$4)
+        INSERT INTO resources (name, description, other_fields)
+        VALUES ($1,$2,$3)
         "#,
             res.name,
-            res.status,
             res.description,
             Json(&res.other_fields) as _,
         )
@@ -55,20 +54,6 @@ pub(crate) async fn update_resource(
     let transaction_result: Result<_, sqlx::Error> = conn
         .transaction(|tx| {
             Box::pin(async move {
-                if let Some(status) = req.status {
-                    if sqlx::query!(
-                        r#"UPDATE resources SET status = $1 WHERE name = $2"#,
-                        &status,
-                        &req.name
-                    )
-                    .execute(tx.acquire().await?)
-                    .await?
-                    .rows_affected()
-                        == 0
-                    {
-                        return Ok(Err("Resource does not exist".to_owned()));
-                    }
-                }
                 if let Some(description) = req.description {
                     sqlx::query!(
                         r#"UPDATE resources SET description = $1 WHERE name = $2"#,
@@ -130,7 +115,6 @@ struct OtherFields {
 
 struct ResourceRow {
     name: String,
-    status: String,
     description: String,
     reserved_until: i64,
     reserved_by: String,
@@ -144,7 +128,7 @@ pub(crate) async fn list_resources(pool: &PgPool) -> anyhow::Result<Vec<Resource
     let rows = sqlx::query_as!(
         ResourceRow,
         r#"
-SELECT name, status, description, reserved_until, reserved_by, other_fields as "other_fields: Json<OtherFields>"
+SELECT name, description, reserved_until, reserved_by, other_fields as "other_fields: Json<OtherFields>"
 FROM resources
         "#
     )
@@ -155,7 +139,6 @@ FROM resources
         let other_fields = row.other_fields.fields.clone();
         resources.push(Resource {
             name: row.name,
-            status: row.status,
             description: row.description,
             reserved_until: row.reserved_until,
             reserved_by: row.reserved_by,

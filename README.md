@@ -75,11 +75,11 @@ curl http://localhost:8000/resource
 ## Create a new resource
 
 ``` sh
-# all fields except `other_fields` are required
+# The fields `name` and `description` are required
 curl http://localhost:8000/resource/new \
   -X POST \
   -H 'Content-Type: application/json' \
-  --data '{"name":"hello","status":"hi","description":"hello world"}'
+  --data '{"name":"hello","description":"hello world"}'
 ```
 
 ## Update an existing resource

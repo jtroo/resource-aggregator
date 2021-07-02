@@ -19,7 +19,6 @@ type UnixTime = i64;
 #[serde(crate = "rocket::serde")]
 pub struct Resource {
     name: String,
-    status: String,
     description: String,
     reserved_until: UnixTime,
     reserved_by: String,
@@ -30,7 +29,6 @@ pub struct Resource {
 #[serde(crate = "rocket::serde")]
 pub struct ResourceCreateReq {
     name: String,
-    status: String,
     description: String,
     other_fields: Option<HashMap<String, String>>,
 }
@@ -40,7 +38,6 @@ pub struct ResourceCreateReq {
 pub struct ResourceUpdateReq {
     name: String,
     new_name: Option<String>,
-    status: Option<String>,
     description: Option<String>,
     reserved_until: Option<UnixTime>,
     reserved_by: Option<String>,
@@ -71,7 +68,6 @@ enum Response {
 async fn create(req: Json<ResourceCreateReq>, db: &State<Db>) -> Response {
     let new_resource = Resource {
         name: req.name.clone(),
-        status: req.status.clone(),
         description: req.description.clone(),
         reserved_until: Default::default(),
         reserved_by: Default::default(),

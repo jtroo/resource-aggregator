@@ -1,5 +1,19 @@
 {
   "db": "PostgreSQL",
+  "1ad506237fa18d0da33aaa4d2363d4bab23719c43abbac00c2a9bf63045a843a": {
+    "query": "\n        INSERT INTO resources (name, description, other_fields)\n        VALUES ($1,$2,$3)\n        ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Jsonb"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "2b3911677f17ead9aa66a82600aef153e2c096836504d6f89f950f9faf378971": {
     "query": "UPDATE resources SET reserved_until = $1 WHERE name = $2",
     "describe": {
@@ -38,21 +52,6 @@
       "nullable": []
     }
   },
-  "5024f2179c8bf98c5086015da2254d8bdc4fde9322f8a539139f400adaf5416d": {
-    "query": "\n        INSERT INTO resources (name, status, description, other_fields)\n        VALUES ($1,$2,$3,$4)\n        ",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Text",
-          "Text",
-          "Jsonb"
-        ]
-      },
-      "nullable": []
-    }
-  },
   "53293cf303e7025d59a3c2685cb406bb80c39d56dcb533e72b0cf3a7a74658a0": {
     "query": "UPDATE resources SET other_fields = $1 WHERE name = $2",
     "describe": {
@@ -66,17 +65,46 @@
       "nullable": []
     }
   },
-  "8e5090306e63e66be62756db9f27dbf3e261d2f5b4b6ba9d32f99d37b741c77b": {
-    "query": "UPDATE resources SET status = $1 WHERE name = $2",
+  "635259c21789a4c04d35d4749b13aecbf0a590abb71320899c2472d588c38447": {
+    "query": "\nSELECT name, description, reserved_until, reserved_by, other_fields as \"other_fields: Json<OtherFields>\"\nFROM resources\n        ",
     "describe": {
-      "columns": [],
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 1,
+          "name": "description",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "reserved_until",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 3,
+          "name": "reserved_by",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "other_fields: Json<OtherFields>",
+          "type_info": "Jsonb"
+        }
+      ],
       "parameters": {
-        "Left": [
-          "Text",
-          "Text"
-        ]
+        "Left": []
       },
-      "nullable": []
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
     }
   },
   "96a01c86197e69027b9969ed2986ba804f09ee3a0c20abdff83e8f0c8f28a1c7": {
@@ -115,54 +143,6 @@
         ]
       },
       "nullable": []
-    }
-  },
-  "ec134e6392d8389c5c415765566a8cc64defc009e89c4464dae5a62dc2f76c6f": {
-    "query": "\nSELECT name, status, description, reserved_until, reserved_by, other_fields as \"other_fields: Json<OtherFields>\"\nFROM resources\n        ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "name",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 1,
-          "name": "status",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 2,
-          "name": "description",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 3,
-          "name": "reserved_until",
-          "type_info": "Int8"
-        },
-        {
-          "ordinal": 4,
-          "name": "reserved_by",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 5,
-          "name": "other_fields: Json<OtherFields>",
-          "type_info": "Jsonb"
-        }
-      ],
-      "parameters": {
-        "Left": []
-      },
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ]
     }
   }
 }
