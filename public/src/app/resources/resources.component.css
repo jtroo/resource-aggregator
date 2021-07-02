@@ -3,6 +3,7 @@
   margin: auto;
   list-style-type: none;
   padding: 0;
+  padding-top: 30px;
   width: 16em;
 }
 .resources li {
@@ -53,8 +54,4 @@
   text-overflow: ellipsis;
   width: 11em;
   display: inline-block;
-}
-
-input {
-  padding: .5rem;
 }
