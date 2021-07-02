@@ -135,5 +135,13 @@ ssh my_ssh_alias
 tar xf resource-aggregator.tar.gz
 cd resource-aggregator
 docker-compose up -d
-./server
+
+# usually need sudo to serve on port 80
+sudo bash -c '
+export DATABASE_URL=postgres://default@localhost:6000
+export PGPASSWORD=default
+export ROCKET_ADDRESS=0.0.0.0
+export ROCKET_PORT=80
+./server'
+
 ```
