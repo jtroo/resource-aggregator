@@ -9,11 +9,15 @@ The HTTP server runs on Rocket 0.5 and uses sqlx+postgresql as the database.
 
 The client side is Angular 12.
 
+For the most part, this is a learning project for Rocket and Angular, though it
+also fulfills a personal need.
+
 # Server quick start
 
 These instructions don't serve the client-side files — only the server APIs.
-To serve client-side files, see the frontend development(TBD) and build(TBD)
-ections.
+
+To serve client-side files, see the [front-end code](public/) and the
+[build section](#Build).
 
 ## Prerequisites
 
@@ -107,4 +111,26 @@ curl http://localhost:8000/resource \
   -X DELETE \
   -H 'Content-Type: application/json' \
   --data '{"name":"hello"}'
+```
+
+# Build
+
+These are the instructions to generate a `.tar.gz` file containing all that is
+needed to run the application on another device. The other device needs to have
+have docker and docker-compose installed.
+
+```sh
+# create the archive
+bash build.sh
+
+# move the bundle
+rsync -avz resource-aggregator.tar.gz my_ssh_alias:~
+
+# ssh into the other device.
+ssh my_ssh_alias
+
+tar xf resource-aggregator.tar.gz
+cd resource-aggregator
+docker-compose up -d
+./server
 ```

@@ -11,6 +11,7 @@ use rocket::serde::{Deserialize, Serialize};
 use rocket::{Build, Rocket, State};
 use rocket_cors::{AllowedHeaders, AllowedOrigins};
 use rocket::tokio;
+use sqlx::migrate::MigrateDatabase;
 
 mod db;
 
@@ -132,11 +133,13 @@ fn create_clear_expired_reservations_worker(db: Db) {
 }
 
 async fn init_db(rocket: Rocket<Build>) -> fairing::Result {
-    let db = match db::new_resource_db(
-        &std::env::var("DATABASE_URL").expect("DATABASE_URL environment variable must be set"),
-    )
-    .await
-    {
+    let db_url = std::env::var("DATABASE_URL").expect("DATABASE_URL environment variable must be set");
+    if let Err(e) = sqlx::Postgres::create_database(&db_url).await {
+        info!("Could not create database: {}", e);
+    } else {
+        warn!("New database created");
+    }
+    let db = match db::new_resource_db(&db_url).await {
         Ok(db) => db,
         Err(_) => return Err(rocket),
     };
