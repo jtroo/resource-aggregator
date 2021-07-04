@@ -47,7 +47,7 @@ export class ResourceDetailComponent implements OnInit {
       .subscribe((resource) => {
         this.resource = resource;
         if (resource) {
-          this.resourceOtherFieldsKeys = Object.keys(resource.other_fields);
+          this.resourceOtherFieldsKeys = Object.keys(resource.other_fields).sort();
         }
       });
   }

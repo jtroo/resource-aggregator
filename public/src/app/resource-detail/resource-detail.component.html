@@ -8,7 +8,7 @@
 </nav>
 <div *ngIf="resource">
 
-  <h2>{{resource.name}} Details</h2>
+  <h2>{{resource.name}}</h2>
 
   <table>
     <tr>
@@ -20,6 +20,11 @@
     <tr>
       <td>Reserved By:</td><td>{{resource.reserved_by || "Unreserved"}}</td>
     </tr>
+    <tr>
+  </table>
+
+  <h2 *ngIf="resourceOtherFieldsKeys.length > 0">Details</h2>
+  <table>
     <tr *ngFor="let key of resourceOtherFieldsKeys">
       <td>{{key | titlecase}}:</td>
       <td>{{resource.other_fields[key]}}</td>
