@@ -8,6 +8,7 @@ const RESERVATION_DURATIONS = [
   { label: '1 hour', value: 3600 },
   { label: '2 hours', value: 7200 },
   { label: '4 hours', value: 14400 },
+  { label: '8 hours', value: 28800 },
   { label: '1 day', value: 86400 },
   { label: '1 week', value: 604800 },
   { label: 'Until cleared', value: 0 },
@@ -62,7 +63,7 @@ export class ResourceReserveComponent implements OnInit {
       return;
     }
     if (this.reservedBy !== this.resource.reserved_by) {
-      setTimeout(() => {this.reservedErr = 'Please input the name of the current reservee'}, 100);
+      setTimeout(() => {this.reservedErr = 'Please input the name of the current reserver'}, 100);
       return;
     } else if (!this.resource.reserved_by && !this.resource.reserved_until) {
       setTimeout(() => {this.reservedErr = 'The resource is not currently reserved'}, 100);
