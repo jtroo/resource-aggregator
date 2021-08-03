@@ -108,7 +108,6 @@ pub(crate) async fn update_resource(
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(crate = "rocket::serde")]
 struct OtherFields {
     #[serde(flatten)]
     fields: HashMap<String, String>,
