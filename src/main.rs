@@ -15,6 +15,18 @@ mod db;
 
 type UnixTime = i64;
 
+prae::define! {
+    pub Name: String
+    adjust |u| *u = u.trim().to_string()
+    ensure |u| u.len() < 50
+}
+
+prae::define! {
+    pub Description: String
+    adjust |u| *u = u.trim().to_string()
+    ensure |u| u.len() < 100
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 pub struct Resource {
@@ -28,26 +40,26 @@ pub struct Resource {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 pub struct ResourceCreateReq {
-    name: String,
-    description: String,
-    other_fields: Option<HashMap<String, String>>,
+    name: Name,
+    description: Description,
+    other_fields: Option<HashMap<Name, Description>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 pub struct ResourceUpdateReq {
-    name: String,
-    new_name: Option<String>,
-    description: Option<String>,
+    name: Name,
+    new_name: Option<Name>,
+    description: Option<Description>,
     reserved_until: Option<UnixTime>,
-    reserved_by: Option<String>,
-    other_fields: Option<HashMap<String, String>>,
+    reserved_by: Option<Name>,
+    other_fields: Option<HashMap<Name, Description>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 pub struct ResourceDeleteReq {
-    name: String,
+    name: Name,
 }
 
 type ResourceList = Vec<Resource>;
@@ -67,11 +79,17 @@ enum Response {
 #[post("/resource/new", format = "json", data = "<req>")]
 async fn create(req: Json<ResourceCreateReq>, db: &State<Db>) -> Response {
     let new_resource = Resource {
-        name: req.name.clone(),
-        description: req.description.clone(),
+        name: req.name.clone().into_inner(),
+        description: req.description.clone().into_inner(),
         reserved_until: Default::default(),
         reserved_by: Default::default(),
-        other_fields: req.other_fields.clone().unwrap_or_default(),
+        other_fields: req
+            .clone()
+            .other_fields
+            .unwrap_or_default()
+            .into_iter()
+            .map(|(k, v)| (k.into_inner(), v.into_inner()))
+            .collect(),
     };
     match db::create_resource(db, &new_resource).await {
         Ok(Ok(())) => Response::OK(()),

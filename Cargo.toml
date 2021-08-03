@@ -11,6 +11,7 @@ sqlx = { version = "0.5", features = [ "runtime-tokio-rustls", "postgres", "json
 anyhow = "1"
 log = "0.4"
 env_logger = "0.8"
+prae = { version = "0.5.1", features = [ "serde" ] }
 
 [features]
 dev_cors = []

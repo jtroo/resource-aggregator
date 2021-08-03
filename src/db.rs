@@ -54,11 +54,12 @@ pub(crate) async fn update_resource(
     let transaction_result: Result<_, sqlx::Error> = conn
         .transaction(|tx| {
             Box::pin(async move {
+                let current_name = req.name.into_inner();
                 if let Some(description) = req.description {
                     sqlx::query!(
                         r#"UPDATE resources SET description = $1 WHERE name = $2"#,
-                        &description,
-                        &req.name
+                        &description.into_inner(),
+                        &current_name,
                     )
                     .execute(tx.acquire().await?)
                     .await?;
@@ -67,7 +68,7 @@ pub(crate) async fn update_resource(
                     sqlx::query!(
                         r#"UPDATE resources SET reserved_until = $1 WHERE name = $2"#,
                         reserved_until,
-                        &req.name
+                        &current_name,
                     )
                     .execute(tx.acquire().await?)
                     .await?;
@@ -75,8 +76,8 @@ pub(crate) async fn update_resource(
                 if let Some(reserved_by) = req.reserved_by {
                     sqlx::query!(
                         r#"UPDATE resources SET reserved_by = $1 WHERE name = $2"#,
-                        reserved_by,
-                        &req.name
+                        reserved_by.into_inner(),
+                        &current_name,
                     )
                     .execute(tx.acquire().await?)
                     .await?;
@@ -85,7 +86,7 @@ pub(crate) async fn update_resource(
                     sqlx::query!(
                         r#"UPDATE resources SET other_fields = $1 WHERE name = $2"#,
                         Json(other_fields) as _,
-                        &req.name
+                        &current_name,
                     )
                     .execute(tx.acquire().await?)
                     .await?;
@@ -93,8 +94,8 @@ pub(crate) async fn update_resource(
                 if let Some(new_name) = req.new_name {
                     sqlx::query!(
                         r#"UPDATE resources SET name = $1 WHERE name = $2"#,
-                        &new_name,
-                        &req.name
+                        &new_name.into_inner(),
+                        &current_name,
                     )
                     .execute(tx.acquire().await?)
                     .await?;
