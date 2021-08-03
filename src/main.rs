@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
-// use sqlx::migrate::MigrateDatabase;
+use sqlx::migrate::MigrateDatabase;
 use serde::{Serialize, Deserialize};
+
+use axum::prelude::*;
+use std::net::SocketAddr;
 
 mod db;
 
@@ -167,12 +170,12 @@ fn create_clear_expired_reservations_worker(db: Db) {
 
 use std::error::Error;
 
-// #[rocket::main]
-fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
     use tracing_subscriber::EnvFilter;
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::from_default_env())
-        .try_init()?;
+        .init();
 
     // // TODO: add SPA handler
     // let rocket = rocket::build()
@@ -212,5 +215,16 @@ fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
     //     drop(e);
     // };
 
-    Ok(())
+    // build our application with a route
+    let app = route("/hello_world", get(handler));
+
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
+    tracing::debug!("listening on {}", addr);
+    Ok(hyper::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await?)
+}
+
+async fn handler() -> response::Html<&'static str> {
+    response::Html("<h1>Hello, World!</h1>")
 }

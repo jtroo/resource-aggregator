@@ -3,11 +3,12 @@ use sqlx::types::Json;
 use sqlx::{postgres::PgPool, Acquire, Connection};
 use std::collections::HashMap;
 use std::time;
+use tracing::{error, warn};
 
 /// Start a connection pool to the resource database at the provided url.
 pub(crate) async fn new_resource_db(url: &str) -> Result<PgPool, ()> {
     Ok(PgPool::connect(url).await.map_err(|e| {
-        log::error!("{}", e);
+        error!("{}", e);
     })?)
 }
 
@@ -192,11 +193,11 @@ pub(crate) async fn clear_expired_reservations(pool: &PgPool) {
             let rows_affected = v.rows_affected();
             match rows_affected {
                 0 => {}
-                _ => log::warn!("Cleared {} expired reservation(s)", rows_affected),
+                _ => warn!("Cleared {} expired reservation(s)", rows_affected),
             };
         }
         Err(e) => {
-            log::error!("{:?}", e);
+            error!("{:?}", e);
         }
     }
 }
