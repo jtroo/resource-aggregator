@@ -12,6 +12,10 @@ The client side is Angular 12.
 For the most part, this is a learning project for Rocket and Angular, though it
 also fulfills a personal need.
 
+# Demo video
+
+[Click here](https://user-images.githubusercontent.com/6634136/128622429-82043e9c-3241-48f7-aa94-9f98bc6ec10a.mp4)
+
 # Server quick start
 
 These instructions don't serve the client-side files — only the server APIs
